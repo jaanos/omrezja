@@ -33,10 +33,11 @@
 \tikzstyle{nasprotna}=[thin, double]
 \tikzstyle{dosezeno}=[white, fill=black]
 
-\NewEnviron{razvoz}[2][{}]{
-    \bigskip
-    \noindent
-    \makebox[\textwidth][c]{
+\NewDocumentCommand{\stevec}{m}{
+    \ifcsname c@#1\endcsname\else\newcounter{#1}\fi\stepcounter{#1}
+}
+
+\NewDocumentEnvironment{razvoz*}{O{{}}m}{
     \begin{tikzpicture}[velikost,style=thick,#1]
         \tikzstyle{every node}=[]
         \tikzstyle{vertex}=[vozlisce razvoza]
@@ -45,31 +46,52 @@
         \tikzstyle{zasicena}=[very thick]
         \tikzstyle{kolicina}=[drevo]
         \tikzstyle{zvezdica}=[zasicena]
-        \BODY
+}{
         \begin{razvoz@#2}
         \end{razvoz@#2}
     \end{tikzpicture}
-    }
 }
 
-\NewEnviron{pretok}[2][{}]{
+\NewEnviron{razvoz}[2][{}]{
     \bigskip
     \noindent
     \makebox[\textwidth][c]{
-    \begin{tikzpicture}[velikost,style=thick,#1]
-    \tikzstyle{every node}=[]
-    \tikzstyle{vertex}=[draw, circle, fill=white, inner sep=0pt, vozlisce pretoka]
-    \tikzstyle{zacetek}=[zacetek pretoka]
-    \tikzstyle{konec}=[konec pretoka]
-    \tikzstyle{zasicena}=[dashed]
-    \tikzstyle{kolicina}=[]
-    \tikzstyle{zvezdica}=[pot]
-    \BODY
-    \begin{pretok@#2}
-    \end{pretok@#2}
-    \end{tikzpicture}
+        \stevec{#2}
+        \leavevmode\beginpgfgraphicnamed{razvoz-#2-\arabic{#2}}
+        \begin{razvoz*}[#1]{#2}
+            \BODY
+        \end{razvoz*}
+        \endpgfgraphicnamed
     }
+}{}
+
+\NewDocumentEnvironment{pretok*}{O{{}}m}{
+    \begin{tikzpicture}[velikost,style=thick,#1]
+        \tikzstyle{every node}=[]
+        \tikzstyle{vertex}=[draw, circle, fill=white, inner sep=0pt, vozlisce pretoka]
+        \tikzstyle{zacetek}=[zacetek pretoka]
+        \tikzstyle{konec}=[konec pretoka]
+        \tikzstyle{zasicena}=[dashed]
+        \tikzstyle{kolicina}=[]
+        \tikzstyle{zvezdica}=[pot]
+}{
+        \begin{pretok@#2}
+        \end{pretok@#2}
+    \end{tikzpicture}
 }
+
+\NewEnviron{pretok}[2][]{
+    \bigskip
+    \noindent
+    \makebox[\textwidth][c]{
+        \stevec{#2}
+        \leavevmode\beginpgfgraphicnamed{pretok-#2-\arabic{#2}}
+        \begin{pretok*}[#1]{#2}
+            \BODY
+        \end{pretok*}
+        \endpgfgraphicnamed
+    }
+}{}
 
 \NewDocumentCommand{\izpisiOznako}{m}{
     \ifthenelse{\equal{#1}{l}}{\ell}{#1}
