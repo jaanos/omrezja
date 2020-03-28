@@ -8,13 +8,13 @@
 
 \tikzstyle{velikost}=[scale=0.7]
 
-\tikzstyle{vozlisce}=[draw, circle, fill=white, inner sep=0pt, minimum size=10mm]
-\tikzstyle{vozlisce pretoka}=[vozlisce]
+\tikzstyle{vozlisce}=[draw, circle, fill=white, inner sep=0pt]
+\tikzstyle{vozlisce pretoka}=[vozlisce, minimum size=5mm]
 
 \ifthenelse{\boolean{@oznake}}{
     \tikzstyle{vozlisce razvoza}=[vozlisce, minimum size=15mm]
 }{
-    \tikzstyle{vozlisce razvoza}=[vozlisce]
+    \tikzstyle{vozlisce razvoza}=[vozlisce, minimum size=10mm]
 }
 
 \tikzstyle{zacetek razvoza}=[draw, black, solid, near start, rectangle, thick, fill=white, inner sep=0pt, minimum size=4mm, odmik=1mm]
@@ -27,11 +27,10 @@
 \tikzstyle{izstopi}=[dashed]
 \tikzstyle{vstopi}=[blue]
 \tikzstyle{kandidat}=[green]
-\tikzstyle{zasicena}=[very thick]
 
 \tikzstyle{pot}=[very thick]
-\tikzstyle{prerez}=[dashed]
-\tikzstyle{nasprotna}=[thin]
+\tikzstyle{prerez}=[zasicena, double]
+\tikzstyle{nasprotna}=[thin, double]
 \tikzstyle{dosezeno}=[white, fill=black]
 
 \NewEnviron{razvoz}[2][{}]{
@@ -43,6 +42,7 @@
         \tikzstyle{vertex}=[vozlisce razvoza]
         \tikzstyle{zacetek}=[zacetek razvoza]
         \tikzstyle{konec}=[konec razvoza]
+        \tikzstyle{zasicena}=[very thick]
         \tikzstyle{kolicina}=[drevo]
         \tikzstyle{zvezdica}=[zasicena]
         \BODY
@@ -61,6 +61,7 @@
     \tikzstyle{vertex}=[draw, circle, fill=white, inner sep=0pt, vozlisce pretoka]
     \tikzstyle{zacetek}=[zacetek pretoka]
     \tikzstyle{konec}=[konec pretoka]
+    \tikzstyle{zasicena}=[dashed]
     \tikzstyle{kolicina}=[]
     \tikzstyle{zvezdica}=[pot]
     \BODY
@@ -74,9 +75,12 @@
     \ifthenelse{\equal{#1}{l}}{\ell}{#1}
 }
 
-\NewDocumentCommand{\vozlisce}{smmO{}m}{
+\NewDocumentCommand{\vozlisce}{smO{below}mO{}}{
     \pgfkeysifdefined{/nodes/#2}{\tikzset{/nodes/#2/.style={dosezeno}}}{\tikzset{/nodes/#2/.style={}}}
-    \node[vertex,label=#5:$\pgfkeysvalueof{/labels/#2}$,/nodes/#2] (#2) at (#3) {\ifthenelse{\IfBooleanTF{#1}{\equal{}{}}{\boolean{@oznake}}}{$\izpisiOznako{#2}$\ifthenelse{\equal{#4}{}}{}{:\,}}{}$#4$};
+    \node[vertex,
+          label=#3:$\pgfkeysvalueof{/labels/#2}$,
+          /nodes/#2] (#2) at (#4)
+    {\ifthenelse{\IfBooleanTF{#1}{\equal{}{}}{\boolean{@oznake}}}{$\izpisiOznako{#2}$\ifthenelse{\equal{#5}{}}{}{:\,}}{}$#5$};
 }
 
 \NewDocumentCommand{\povezava}{mmO{}mO{}mO{}}{
@@ -84,9 +88,11 @@
     \pgfkeysifdefined{/start/#1/#2}{}{\pgfkeyssetvalue{/start/#1/#2}{#4}}
     \draw[->,/links/#1/#2] (#1) to[#7]
         node[zacetek, #6, #5] {$\pgfkeysvalueof{/start/#1/#2}$}
-        node[konec, #6, #5] {$\pgfkeysvalueof{/end/#1/#2} \ifthenelse{\equal{#3}{}}{}{\le #3}$}
+        node[konec, #6, #5] {$\pgfkeysifdefined{/end/#1/#2}{\pgfkeysvalueof{/end/#1/#2}}{\pgfkeysifdefined{/nicle}{0}{}} \ifthenelse{\equal{#3}{}}{}{\le #3}$}
         (#2);
 }
+
+\NewDocumentCommand{\nicle}{}{\pgfkeyssetvalue{/nicle}{}}
 
 \NewDocumentCommand{\oznaka}{mm}{\pgfkeyssetvalue{/labels/#1}{#2}}
 
