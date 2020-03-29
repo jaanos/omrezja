@@ -30,7 +30,8 @@
 
 \tikzstyle{pot}=[very thick]
 \tikzstyle{prerez}=[zasicena, double]
-\tikzstyle{nasprotna}=[thin, double]
+\tikzstyle{prazna}=[thin]
+\tikzstyle{nasprotna}=[prazna, double]
 \tikzstyle{dosezeno}=[white, fill=black]
 
 \NewDocumentCommand{\stevec}{m}{
@@ -44,6 +45,7 @@
         \tikzstyle{zacetek}=[zacetek razvoza]
         \tikzstyle{konec}=[konec razvoza]
         \tikzstyle{zasicena}=[very thick]
+        \tikzstyle{povezava}=[thick]
         \tikzstyle{kolicina}=[drevo]
         \tikzstyle{zvezdica}=[zasicena]
 }{
@@ -72,9 +74,11 @@
         \tikzstyle{zacetek}=[zacetek pretoka]
         \tikzstyle{konec}=[konec pretoka]
         \tikzstyle{zasicena}=[dashed]
-        \tikzstyle{kolicina}=[]
+        \tikzstyle{povezava}=[thick]
+        \tikzstyle{kolicina}=[thick]
         \tikzstyle{zvezdica}=[pot]
 }{
+        \pgfkeysifdefined{/nicle}{\tikzstyle{povezava}=[prazna]}{}
         \begin{pretok@#2}
         \end{pretok@#2}
     \end{tikzpicture}
@@ -108,7 +112,7 @@
 \NewDocumentCommand{\povezava}{mmO{}mO{}mO{}}{
     \pgfkeysifdefined{/links/#1/#2}{}{\tikzset{/links/#1/#2/.style={}}}
     \pgfkeysifdefined{/start/#1/#2}{}{\pgfkeyssetvalue{/start/#1/#2}{#4}}
-    \draw[->,/links/#1/#2] (#1) to[#7]
+    \draw[->,povezava,/links/#1/#2] (#1) to[#7]
         node[zacetek, #6, #5] {$\pgfkeysvalueof{/start/#1/#2}$}
         node[konec, #6, #5] {$\pgfkeysifdefined{/end/#1/#2}{\pgfkeysvalueof{/end/#1/#2}}{\pgfkeysifdefined{/nicle}{0}{}} \ifthenelse{\equal{#3}{}}{}{\le #3}$}
         (#2);
@@ -130,6 +134,11 @@
 }
 
 \NewDocumentCommand{\kandidat}{mmO{kandidat}}{
+    \tikzset{/links/#1/#2/.style={#3}}
+    \pgfkeyssetvalue{/links/#1/#2}{}
+}
+
+\NewDocumentCommand{\nasprotna}{mmO{nasprotna}}{
     \tikzset{/links/#1/#2/.style={#3}}
     \pgfkeyssetvalue{/links/#1/#2}{}
 }
