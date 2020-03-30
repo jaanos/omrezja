@@ -106,7 +106,7 @@ ter izberimo vstopno in izstopno povezavo.
 Definirajmo in izrišimo omrežje za problem pretoka.
 
 \NewEnviron{pretok@grafB}{
-    \vozlisce*{S}{-8, 5}
+    \vozlisce*{s}{-8, 5}
     \vozlisce{a}{ 0, 5}
     \vozlisce{b}{-4, 2}
     \vozlisce{c}{-8,-1}
@@ -114,11 +114,11 @@ Definirajmo in izrišimo omrežje za problem pretoka.
     \vozlisce{e}{ 4, 2}
     \vozlisce{f}{ 0,-5}
     \vozlisce{g}{ 8, 5}
-    \vozlisce*{T}{ 8,-1}
+    \vozlisce*{t}{ 8,-1}
 
-    \povezava{S}{a}{6}{above}
-    \povezava{S}{b}{3}[sloped]{above}
-    \povezava{S}{c}{2}{left}
+    \povezava{s}{a}{6}{above}
+    \povezava{s}{b}{3}[sloped]{above}
+    \povezava{s}{c}{2}{left}
     \povezava{a}{b}{2}[sloped]{above}
     \povezava{a}{e}{9}[sloped]{above}
     \povezava{b}{c}{7}[sloped]{below}
@@ -127,13 +127,13 @@ Definirajmo in izrišimo omrežje za problem pretoka.
     \povezava{d}{a}{10}{left}
     \povezava{d}{b}{10}[sloped]{below}
     \povezava{d}{e}{3}[sloped]{below}
-    \povezava{d}{T}{2}{below}
+    \povezava{d}{t}{2}{below}
     \povezava{e}{g}{2}[sloped]{above}
-    \povezava{e}{T}{5}[sloped]{below}
+    \povezava{e}{t}{5}[sloped]{below}
     \povezava{f}{d}{8}{left}
-    \povezava{f}{T}{4}[sloped]{below}
+    \povezava{f}{t}{4}[sloped]{below}
     \povezava{g}{a}{3}{above}
-    \povezava{g}{T}{4}{right}
+    \povezava{g}{t}{4}{right}
 }
 
 \begin{pretok}{grafB}
@@ -144,16 +144,26 @@ Poiščimo disjunktne povečujoče poti.
 
 \begin{pretok}{grafB}
     \nicle
-    \kolicina*{S}{a}[6]{0}[red]
+    \kolicina*{s}{a}[6]{0}[red]
     \kolicina*{a}{e}[9]{0}[red]
-    \kolicina*{e}{T}[5]{0}[red]
-    \kolicina*{S}{b}[3]{0}[green]
+    \kolicina*{e}{t}[5]{0}[red]
+    \kolicina*{s}{b}[3]{0}[green]
     \kolicina*{b}{c}[7]{0}[green]
     \kolicina*{c}{d}[5]{0}[green]
-    \kolicina*{d}{T}[2]{0}[green]
-    \kolicina*{S}{c}[2]{0}[blue]
+    \kolicina*{d}{t}[2]{0}[green]
+    \kolicina*{s}{c}[2]{0}[blue]
     \kolicina*{c}{f}[1]{0}[blue]
-    \kolicina*{f}{T}[4]{0}[blue]
+    \kolicina*{f}{t}[4]{0}[blue]
+
+    \dosezeno{s}
+    \dosezeno{a}
+    \dosezeno{b}
+    \dosezeno{c}
+    \dosezeno{d}
+    \dosezeno{e}
+    \dosezeno{f}
+    \dosezeno{g}
+    \dosezeno{t}[pogojno]
 \end{pretok}
 
 \noindent
@@ -161,24 +171,24 @@ Podajmo maksimalni pretok in minimalni prerez.
 
 \begin{pretok}{grafB}
     \nicle
-    \kolicina{S}{a}[0]{6}[zasicena]
-    \kolicina{S}{b}[1]{2}
-    \kolicina{S}{c}[0]{2}[zasicena]
+    \kolicina{s}{a}[0]{6}[zasicena]
+    \kolicina{s}{b}[1]{2}
+    \kolicina{s}{c}[0]{2}[zasicena]
     \kolicina{a}{e}[3]{6}
     \kolicina{b}{c}[5]{2}
     \kolicina{c}{d}[2]{3}
     \kolicina{c}{f}[0]{1}[prerez]
     \kolicina{d}{e}[2]{1}
-    \kolicina{d}{T}[0]{2}[prerez]
+    \kolicina{d}{t}[0]{2}[prerez]
     \kolicina{e}{g}[0]{2}[prerez]
-    \kolicina{e}{T}[0]{5}[prerez]
-    \kolicina{f}{T}[3]{1}
-    \kolicina{g}{T}[2]{2}
+    \kolicina{e}{t}[0]{5}[prerez]
+    \kolicina{f}{t}[3]{1}
+    \kolicina{g}{t}[2]{2}
 
     \nasprotna{f}{d}
     \nasprotna{g}{a}
 
-    \dosezeno{S}
+    \dosezeno{s}
     \dosezeno{b}
     \dosezeno{c}
     \dosezeno{d}

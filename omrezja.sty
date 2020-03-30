@@ -33,6 +33,7 @@
 \tikzstyle{prazna}=[thin]
 \tikzstyle{nasprotna}=[prazna, double]
 \tikzstyle{dosezeno}=[white, fill=black]
+\tikzstyle{pogojno}=[fill=lightgray]
 
 \NewDocumentCommand{\stevec}{m}{
     \ifcsname c@#1\endcsname\else\newcounter{#1}\fi\stepcounter{#1}
@@ -102,7 +103,7 @@
 }
 
 \NewDocumentCommand{\vozlisce}{smO{below}mO{}}{
-    \pgfkeysifdefined{/nodes/#2}{\tikzset{/nodes/#2/.style={dosezeno}}}{\tikzset{/nodes/#2/.style={}}}
+    \pgfkeysifdefined{/nodes/#2}{\tikzset{/nodes/#2/.style={\pgfkeysvalueof{/nodes/#2}}}}{\tikzset{/nodes/#2/.style={}}}
     \node[vertex,
           label=#3:$\pgfkeysvalueof{/labels/#2}$,
           /nodes/#2] (#2) at (#4)
@@ -122,7 +123,7 @@
 
 \NewDocumentCommand{\oznaka}{mm}{\pgfkeyssetvalue{/labels/#1}{#2}}
 
-\NewDocumentCommand{\dosezeno}{m}{\pgfkeyssetvalue{/nodes/#1}{}}
+\NewDocumentCommand{\dosezeno}{mO{dosezeno}}{\pgfkeyssetvalue{/nodes/#1}{#2}}
 
 \NewDocumentCommand{\cena}{mmm}{\pgfkeyssetvalue{/start/#1/#2}{#3}}
 
