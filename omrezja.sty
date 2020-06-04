@@ -1,4 +1,5 @@
-\RequirePackage{tikz,xparse,environ,ifthen,keyval}
+\RequirePackage{tikz,xparse,environ,ifthen,keyval,etoolbox}
+\usetikzlibrary{matrix}
 
 \newboolean{@oznake}
 \DeclareOption{oznake}{\setboolean{@oznake}{true}}
@@ -7,16 +8,19 @@
 \tikzset{odmik/.style={left/.default=#1,right/.default=#1,above/.default=#1,below/.default=#1}}
 
 \tikzstyle{velikost}=[scale=0.7]
-
-\tikzstyle{vozlisce}=[draw, circle, fill=white, inner sep=0pt]
-\tikzstyle{vozlisce pretoka}=[vozlisce, minimum size=5mm]
+\tikzstyle{velikost vozlisca pretoka}=[minimum size=5mm]
 
 \ifthenelse{\boolean{@oznake}}{
-    \tikzstyle{vozlisce razvoza}=[vozlisce, minimum size=15mm]
+    \tikzstyle{velikost vozlisca razvoza}=[minimum size=15mm]
 }{
-    \tikzstyle{vozlisce razvoza}=[vozlisce, minimum size=10mm]
+    \tikzstyle{velikost vozlisca razvoza}=[minimum size=10mm]
 }
 
+\tikzstyle{osnova}=[thick, black]
+
+\tikzstyle{vozlisce}=[osnova, draw, circle, fill=white, inner sep=0pt]
+\tikzstyle{vozlisce razvoza}=[vozlisce, velikost vozlisca razvoza]
+\tikzstyle{vozlisce pretoka}=[vozlisce, velikost vozlisca pretoka]
 \tikzstyle{zacetek razvoza}=[draw, black, solid, near start, rectangle, thick, fill=white, inner sep=0pt, minimum size=4mm, odmik=1mm]
 \tikzstyle{konec razvoza}=[black, near end]
 
@@ -40,13 +44,13 @@
 }
 
 \NewDocumentEnvironment{razvoz*}{O{{}}m}{
-    \begin{tikzpicture}[velikost,style=thick,#1]
+    \begin{tikzpicture}[velikost,#1]
         \tikzstyle{every node}=[]
         \tikzstyle{vertex}=[vozlisce razvoza]
         \tikzstyle{zacetek}=[zacetek razvoza]
         \tikzstyle{konec}=[konec razvoza]
         \tikzstyle{zasicena}=[very thick]
-        \tikzstyle{povezava}=[thick]
+        \tikzstyle{povezava}=[osnova]
         \tikzstyle{kolicina}=[drevo]
         \tikzstyle{zvezdica}=[zasicena]
 }{
@@ -69,13 +73,13 @@
 }{}
 
 \NewDocumentEnvironment{pretok*}{O{{}}m}{
-    \begin{tikzpicture}[velikost,style=thick,#1]
+    \begin{tikzpicture}[velikost,#1]
         \tikzstyle{every node}=[]
         \tikzstyle{vertex}=[draw, circle, fill=white, inner sep=0pt, vozlisce pretoka]
         \tikzstyle{zacetek}=[zacetek pretoka]
         \tikzstyle{konec}=[konec pretoka]
         \tikzstyle{zasicena}=[dashed]
-        \tikzstyle{povezava}=[thick]
+        \tikzstyle{povezava}=[osnova]
         \tikzstyle{kolicina}=[thick]
         \tikzstyle{zvezdica}=[pot]
 }{
@@ -107,15 +111,15 @@
     \node[vertex,
           label=#3:$\pgfkeysvalueof{/labels/#2}$,
           /nodes/#2] (#2) at (#4)
-    {\ifthenelse{\IfBooleanTF{#1}{\equal{}{}}{\boolean{@oznake}}}{$\izpisiOznako{#2}$\ifthenelse{\equal{#5}{}}{}{:\,}}{}$#5$};
+    {\ifthenelse{\IfBooleanTF{#1}{\equal{}{}}{\pgfkeysifdefined{/mreza}{\equal{0}{1}}{\boolean{@oznake}}}}{$\izpisiOznako{#2}$\ifthenelse{\equal{#5}{}}{}{:\,}}{}\pgfkeysifdefined{/mreza}{}{$#5$}};
 }
 
 \NewDocumentCommand{\povezava}{mmO{}mO{}mO{}}{
     \pgfkeysifdefined{/links/#1/#2}{}{\tikzset{/links/#1/#2/.style={}}}
     \pgfkeysifdefined{/start/#1/#2}{}{\pgfkeyssetvalue{/start/#1/#2}{#4}}
     \draw[->,povezava,/links/#1/#2] (#1) to[#7]
-        node[zacetek, #6, #5] {$\pgfkeysvalueof{/start/#1/#2}$}
-        node[konec, #6, #5] {$\pgfkeysifdefined{/end/#1/#2}{\pgfkeysvalueof{/end/#1/#2}}{\pgfkeysifdefined{/nicle}{0}{}} \ifthenelse{\equal{#3}{}}{}{\le #3}$}
+        node[zacetek, #6, #5] {\pgfkeysifdefined{/mreza}{}{$\pgfkeysvalueof{/start/#1/#2}$}}
+        node[konec, #6, #5] {\pgfkeysifdefined{/mreza}{}{$\pgfkeysifdefined{/end/#1/#2}{\pgfkeysvalueof{/end/#1/#2}}{\pgfkeysifdefined{/nicle}{0}{}} \ifthenelse{\equal{#3}{}}{}{\le #3}$}}
         (#2);
 }
 
@@ -142,6 +146,38 @@
 \NewDocumentCommand{\nasprotna}{mmO{nasprotna}}{
     \tikzset{/links/#1/#2/.style={#3}}
     \pgfkeyssetvalue{/links/#1/#2}{}
+}
+
+\NewEnviron{mreza}[3][0.3] {
+    \stevec{mreza}
+    \@ifundefined{box@mreza}{%
+        \newsavebox{\box@mreza}%
+    }{}
+    \pgfkeyssetvalue{/mreza}{}
+    \tikzstyle{velikost}=[scale=#1]
+    \tikzstyle{velikost vozlisca pretoka}=[minimum size=5mm]
+    \tikzstyle{velikost vozlisca razvoza}=[minimum size=5mm]
+    \tikzstyle{osnova}=[thin, gray]
+    \tikzstyle{zacetek razvoza}=[osnova, near start]
+    \savebox{\box@mreza}{
+        \BODY
+    }
+    \leavevmode\beginpgfgraphicnamed{mreza-\arabic{mreza}}
+    \begin{tikzpicture}[style=thick,scale=0.6]
+        \let\matrix@mreza\empty
+        \foreach \x in {1,...,#2} {
+            \ifthenelse{#3>1}{
+                \foreach \y in {2,...,#3} {
+                    \expandafter\gappto\expandafter\matrix@mreza\expandafter{\usebox{\box@mreza} \&}
+                }
+            }{}
+            \expandafter\gappto\expandafter\matrix@mreza\expandafter{\usebox{\box@mreza} \\}
+        }
+        \node[matrix of nodes,ampersand replacement=\&] {
+            \matrix@mreza
+        };
+    \end{tikzpicture}
+    \endpgfgraphicnamed
 }
 
 \endinput
