@@ -149,20 +149,20 @@
 }
 
 \NewEnviron{mreza}[3][0.3] {
-    \stevec{mreza}
+    \stevec{mreza}%
     \@ifundefined{box@mreza}{%
         \newsavebox{\box@mreza}%
-    }{}
-    \pgfkeyssetvalue{/mreza}{}
-    \tikzstyle{velikost}=[scale=#1]
-    \tikzstyle{velikost vozlisca pretoka}=[minimum size=5mm]
-    \tikzstyle{velikost vozlisca razvoza}=[minimum size=5mm]
-    \tikzstyle{osnova}=[thin, gray]
-    \tikzstyle{zacetek razvoza}=[osnova, near start]
+    }{}%
+    \pgfkeyssetvalue{/mreza}{}%
+    \tikzstyle{velikost}=[scale=#1]%
+    \tikzstyle{velikost vozlisca pretoka}=[minimum size=5mm]%
+    \tikzstyle{velikost vozlisca razvoza}=[minimum size=5mm]%
+    \tikzstyle{osnova}=[thin, gray]%
+    \tikzstyle{zacetek razvoza}=[osnova, near start]%
     \savebox{\box@mreza}{
         \BODY
-    }
-    \leavevmode\beginpgfgraphicnamed{mreza-\arabic{mreza}}
+    }%
+    \leavevmode\beginpgfgraphicnamed{mreza-\arabic{mreza}}%
     \begin{tikzpicture}[style=thick,scale=0.6]
         \let\matrix@mreza\empty
         \foreach \x in {1,...,#2} {
