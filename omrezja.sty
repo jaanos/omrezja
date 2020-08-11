@@ -9,6 +9,7 @@
 
 \tikzstyle{velikost}=[scale=0.7]
 \tikzstyle{velikost vozlisca pretoka}=[minimum size=5mm]
+\tikzstyle{velikost vozlisca neusmerjenega grafa}=[minimum size=5mm]
 
 \ifthenelse{\boolean{@oznake}}{
     \tikzstyle{velikost vozlisca razvoza}=[minimum size=15mm]
@@ -21,11 +22,16 @@
 \tikzstyle{vozlisce}=[osnova, draw, circle, fill=white, inner sep=0pt]
 \tikzstyle{vozlisce razvoza}=[vozlisce, velikost vozlisca razvoza]
 \tikzstyle{vozlisce pretoka}=[vozlisce, velikost vozlisca pretoka]
+\tikzstyle{vozlisce neusmerjenega grafa}=[vozlisce, velikost vozlisca neusmerjenega grafa]
+
 \tikzstyle{zacetek razvoza}=[draw, black, solid, near start, rectangle, thick, fill=white, inner sep=0pt, minimum size=4mm, odmik=1mm]
 \tikzstyle{konec razvoza}=[black, near end]
 
 \tikzstyle{zacetek pretoka}=[black, near start]
 \tikzstyle{konec pretoka}=[black, near end]
+
+\tikzstyle{zacetek neusmerjenega grafa}=[black, midway]
+\tikzstyle{konec neusmerjenega grafa}=[black, midway]
 
 \tikzstyle{drevo}=[very thick, red]
 \tikzstyle{izstopi}=[dashed]
@@ -53,6 +59,7 @@
         \tikzstyle{povezava}=[osnova]
         \tikzstyle{kolicina}=[drevo]
         \tikzstyle{zvezdica}=[zasicena]
+        \tikzstyle{puscica}=[->]
 }{
         \begin{razvoz@#2}
         \end{razvoz@#2}
@@ -82,6 +89,7 @@
         \tikzstyle{povezava}=[osnova]
         \tikzstyle{kolicina}=[thick]
         \tikzstyle{zvezdica}=[pot]
+        \tikzstyle{puscica}=[->]
 }{
         \pgfkeysifdefined{/nicle}{\tikzstyle{povezava}=[prazna]}{}
         \begin{pretok@#2}
@@ -102,6 +110,36 @@
     }
 }{}
 
+\NewDocumentEnvironment{neusmerjen*}{O{{}}m}{
+    \begin{tikzpicture}[velikost,#1]
+    \tikzstyle{every node}=[]
+    \tikzstyle{vertex}=[draw, circle, fill=white, inner sep=0pt, vozlisce neusmerjenega grafa]
+    \tikzstyle{zacetek}=[zacetek neusmerjenega grafa]
+    \tikzstyle{konec}=[konec neusmerjenega grafa]
+    \tikzstyle{zasicena}=[dashed]
+    \tikzstyle{povezava}=[osnova]
+    \tikzstyle{kolicina}=[thick]
+    \tikzstyle{zvezdica}=[pot]
+    \tikzstyle{puscica}=[]
+}{
+    \begin{neusmerjen@#2}
+    \end{neusmerjen@#2}
+    \end{tikzpicture}
+}
+
+\NewEnviron{neusmerjen}[2][]{
+    \bigskip
+    \noindent
+    \makebox[\textwidth][c]{
+        \stevec{#2}
+        \leavevmode\beginpgfgraphicnamed{neusmerjen-#2-\arabic{#2}}
+        \begin{neusmerjen*}[#1]{#2}
+            \BODY
+        \end{neusmerjen*}
+        \endpgfgraphicnamed
+    }
+}{}
+
 \NewDocumentCommand{\izpisiOznako}{m}{
     \ifthenelse{\equal{#1}{l}}{\ell}{#1}
 }
@@ -117,7 +155,7 @@
 \NewDocumentCommand{\povezava}{mmO{}mO{}mO{}}{
     \pgfkeysifdefined{/links/#1/#2}{}{\tikzset{/links/#1/#2/.style={}}}
     \pgfkeysifdefined{/start/#1/#2}{}{\pgfkeyssetvalue{/start/#1/#2}{#4}}
-    \draw[->,povezava,/links/#1/#2] (#1) to[#7]
+    \draw[puscica,povezava,/links/#1/#2] (#1) to[#7]
         node[zacetek, #6, #5] {\pgfkeysifdefined{/mreza}{}{$\pgfkeysvalueof{/start/#1/#2}$}}
         node[konec, #6, #5] {\pgfkeysifdefined{/mreza}{}{$\pgfkeysifdefined{/end/#1/#2}{\pgfkeysvalueof{/end/#1/#2}}{\pgfkeysifdefined{/nicle}{0}{}} \ifthenelse{\equal{#3}{}}{}{\le #3}$}}
         (#2);
@@ -155,8 +193,9 @@
     }{}%
     \pgfkeyssetvalue{/mreza}{}%
     \tikzstyle{velikost}=[scale=#1]%
-    \tikzstyle{velikost vozlisca pretoka}=[minimum size=5mm]%
     \tikzstyle{velikost vozlisca razvoza}=[minimum size=5mm]%
+    \tikzstyle{velikost vozlisca pretoka}=[minimum size=5mm]%
+    \tikzstyle{velikost vozlisca neusmerjenega grafa}=[minimum size=3mm]%
     \tikzstyle{osnova}=[thin, gray]%
     \tikzstyle{zacetek razvoza}=[osnova, near start]%
     \savebox{\box@mreza}{

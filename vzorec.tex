@@ -210,4 +210,51 @@ Podajmo maksimalni pretok in minimalni prerez.
 \end{mreza}
 }
 
+\clearpage
+
+\section{Neusmerjeni grafi}
+
+Narišimo neusmerjen graf.
+
+\NewEnviron{neusmerjen@grafC}{
+    \vozlisce{a}[above]{xyz polar cs:angle=  0,radius=0}
+    \vozlisce{b}[below]{xyz polar cs:angle=270,radius=3}
+    \vozlisce{c}[right]{xyz polar cs:angle= 30,radius=3}
+    \vozlisce{d}[left]{xyz polar cs:angle=150,radius=3}
+
+    \povezava{a}{b}{}{left}
+    \povezava{a}{c}{}[sloped]{below}
+    \povezava{a}{d}{}[sloped]{below}
+    \povezava{b}{c}{}[sloped]{below}
+    \povezava{b}{d}{}[sloped]{below}
+    \povezava{c}{d}{}{above}
+}
+
+\begin{neusmerjen}{grafC}
+\end{neusmerjen}
+
+\noindent
+Dodajmo uteži na vozlišča in povezave.
+
+\begin{neusmerjen}{grafC}
+    \oznaka{a}{0}
+    \oznaka{b}{1}
+    \oznaka{c}{2}
+    \oznaka{d}{3}
+
+    \kolicina{a}{b}{4}
+    \kolicina{a}{c}{5}
+    \kolicina{a}{d}{6}
+    \kolicina{b}{c}{7}
+    \kolicina{b}{d}{8}
+    \kolicina{c}{d}{9}
+\end{neusmerjen}
+
+\makebox[\textwidth][c]{
+    \begin{mreza}{3}{4}
+        \begin{neusmerjen*}{grafC}
+        \end{neusmerjen*}
+    \end{mreza}
+}
+
 \end{document}
