@@ -45,6 +45,11 @@
 \tikzstyle{dosezeno}=[white, fill=black]
 \tikzstyle{pogojno}=[fill=lightgray]
 
+\tikzstyle{mreza/velikost vozlisca razvoza}=[minimum size=5mm]
+\tikzstyle{mreza/velikost vozlisca pretoka}=[minimum size=5mm]
+\tikzstyle{mreza/velikost vozlisca neusmerjenega grafa}=[minimum size=3mm]
+\tikzstyle{mreza/osnova}=[thin, gray]
+
 \NewDocumentCommand{\stevec}{m}{
     \ifcsname c@#1\endcsname\else\newcounter{#1}\fi\stepcounter{#1}
 }
@@ -193,10 +198,10 @@
     }{}%
     \pgfkeyssetvalue{/mreza}{}%
     \tikzstyle{velikost}=[scale=#1]%
-    \tikzstyle{velikost vozlisca razvoza}=[minimum size=5mm]%
-    \tikzstyle{velikost vozlisca pretoka}=[minimum size=5mm]%
-    \tikzstyle{velikost vozlisca neusmerjenega grafa}=[minimum size=3mm]%
-    \tikzstyle{osnova}=[thin, gray]%
+    \tikzstyle{velikost vozlisca razvoza}=[mreza/velikost vozlisca razvoza]%
+    \tikzstyle{velikost vozlisca pretoka}=[mreza/velikost vozlisca pretoka]%
+    \tikzstyle{velikost vozlisca neusmerjenega grafa}=[mreza/velikost vozlisca neusmerjenega grafa]%
+    \tikzstyle{osnova}=[mreza/osnova]%
     \tikzstyle{zacetek razvoza}=[osnova, near start]%
     \savebox{\box@mreza}{
         \BODY
