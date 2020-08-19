@@ -2,6 +2,8 @@
 \usetikzlibrary{matrix}
 
 \newboolean{@oznake}
+\newboolean{@drevo}
+\setboolean{@drevo}{false}
 \DeclareOption{oznake}{\setboolean{@oznake}{true}}
 \ProcessOptions
 
@@ -9,7 +11,9 @@
 
 \tikzstyle{velikost}=[scale=0.7]
 \tikzstyle{velikost vozlisca pretoka}=[minimum size=5mm]
-\tikzstyle{velikost vozlisca neusmerjenega grafa}=[minimum size=5mm]
+\tikzstyle{velikost vozlisca neusmerjenega grafa}=[minimum size=6mm]
+\tikzstyle{velikost vozlisca usmerjenega grafa}=[minimum size=6mm]
+\tikzstyle{velikost vozlisca drevesa}=[minimum size=6mm]
 
 \ifthenelse{\boolean{@oznake}}{
     \tikzstyle{velikost vozlisca razvoza}=[minimum size=15mm]
@@ -23,6 +27,8 @@
 \tikzstyle{vozlisce razvoza}=[vozlisce, velikost vozlisca razvoza]
 \tikzstyle{vozlisce pretoka}=[vozlisce, velikost vozlisca pretoka]
 \tikzstyle{vozlisce neusmerjenega grafa}=[vozlisce, velikost vozlisca neusmerjenega grafa]
+\tikzstyle{vozlisce usmerjenega grafa}=[vozlisce, velikost vozlisca usmerjenega grafa]
+\tikzstyle{vozlisce drevesa}=[velikost vozlisca drevesa]
 
 \tikzstyle{zacetek razvoza}=[draw, black, solid, near start, rectangle, thick, fill=white, inner sep=0pt, minimum size=4mm, odmik=1mm]
 \tikzstyle{konec razvoza}=[black, near end]
@@ -30,8 +36,14 @@
 \tikzstyle{zacetek pretoka}=[black, near start]
 \tikzstyle{konec pretoka}=[black, near end]
 
-\tikzstyle{zacetek neusmerjenega grafa}=[black, midway]
-\tikzstyle{konec neusmerjenega grafa}=[black, midway]
+\tikzstyle{zacetek neusmerjenega grafa}=[midway]
+\tikzstyle{konec neusmerjenega grafa}=[midway]
+
+\tikzstyle{zacetek usmerjenega grafa}=[midway]
+\tikzstyle{konec usmerjenega grafa}=[midway]
+
+\tikzstyle{zacetek drevesa}=[black, midway]
+\tikzstyle{konec drevesa}=[black, midway]
 
 \tikzstyle{drevo}=[very thick, red]
 \tikzstyle{izstopi}=[dashed]
@@ -48,6 +60,8 @@
 \tikzstyle{mreza/velikost vozlisca razvoza}=[minimum size=5mm]
 \tikzstyle{mreza/velikost vozlisca pretoka}=[minimum size=5mm]
 \tikzstyle{mreza/velikost vozlisca neusmerjenega grafa}=[minimum size=3mm]
+\tikzstyle{mreza/velikost vozlisca usmerjenega grafa}=[minimum size=3mm]
+\tikzstyle{mreza/velikost vozlisca drevesa}=[minimum size=3mm]
 \tikzstyle{mreza/osnova}=[thin, gray]
 
 \NewDocumentCommand{\stevec}{m}{
@@ -125,10 +139,10 @@
     \tikzstyle{vertex}=[draw, circle, fill=white, inner sep=0pt, vozlisce neusmerjenega grafa]
     \tikzstyle{zacetek}=[zacetek neusmerjenega grafa]
     \tikzstyle{konec}=[konec neusmerjenega grafa]
-    \tikzstyle{zasicena}=[dashed]
+    \tikzstyle{zasicena}=[very thick]
     \tikzstyle{povezava}=[osnova]
     \tikzstyle{kolicina}=[thick]
-    \tikzstyle{zvezdica}=[pot]
+    \tikzstyle{zvezdica}=[zasicena]
     \tikzstyle{puscica}=[]
 }{
     \ifthenelse{\equal{#2}{*}}{}{
@@ -151,25 +165,93 @@
     }
 }{}
 
+\NewDocumentEnvironment{usmerjen*}{O{{}}m}{
+    \begin{tikzpicture}[velikost,#1]
+    \tikzstyle{every node}=[]
+    \tikzstyle{vertex}=[draw, circle, fill=white, inner sep=0pt, vozlisce usmerjenega grafa]
+    \tikzstyle{zacetek}=[zacetek usmerjenega grafa]
+    \tikzstyle{konec}=[konec usmerjenega grafa]
+    \tikzstyle{zasicena}=[red]
+    \tikzstyle{povezava}=[osnova]
+    \tikzstyle{kolicina}=[osnova]
+    \tikzstyle{zvezdica}=[zasicena]
+    \tikzstyle{puscica}=[->]
+}{
+    \ifthenelse{\equal{#2}{*}}{}{
+        \begin{usmerjen@#2}
+        \end{usmerjen@#2}
+    }
+    \end{tikzpicture}
+}
+
+\NewEnviron{usmerjen}[2][]{
+    \bigskip
+    \noindent
+    \makebox[\textwidth][c]{
+        \stevec{#2}
+        \leavevmode\beginpgfgraphicnamed{usmerjen-#2-\arabic{#2}}
+        \begin{usmerjen*}[#1]{#2}
+            \BODY
+        \end{usmerjen*}
+        \endpgfgraphicnamed
+    }
+}{}
+
+\NewDocumentEnvironment{drevo*}{O{{}}m}{
+    \setboolean{@drevo}{true}
+    \begin{tikzpicture}[velikost,#1]
+    \tikzstyle{every node}=[]
+    \tikzstyle{vertex}=[vozlisce drevesa]
+    \tikzstyle{odlocitev}=[osnova, draw, rectangle, vozlisce drevesa]
+    \tikzstyle{dogodek}=[osnova, draw, circle, vozlisce drevesa]
+    \tikzstyle{zacetek}=[zacetek drevesa]
+    \tikzstyle{konec}=[konec drevesa]
+    \tikzstyle{zasicena}=[double, very thick]
+    \tikzstyle{povezava}=[osnova]
+    \tikzstyle{kolicina}=[osnova]
+    \tikzstyle{zvezdica}=[zasicena]
+    \tikzstyle{puscica}=[]
+}{
+    \ifthenelse{\equal{#2}{*}}{}{
+        \begin{drevo@#2}
+        \end{drevo@#2}
+    }
+    \end{tikzpicture}
+}
+
+\NewEnviron{drevo}[2][]{
+    \bigskip
+    \noindent
+    \makebox[\textwidth][c]{
+        \stevec{#2}
+        \leavevmode\beginpgfgraphicnamed{drevo-#2-\arabic{#2}}
+        \begin{drevo*}[#1]{#2}
+            \BODY
+        \end{drevo*}
+        \endpgfgraphicnamed
+    }
+}{}
+
 \NewDocumentCommand{\izpisiOznako}{m}{
     \ifthenelse{\equal{#1}{l}}{\ell}{#1}
 }
 
-\NewDocumentCommand{\vozlisce}{smO{below}mO{}}{
-    \pgfkeysifdefined{/nodes/#2}{\tikzset{/nodes/#2/.style={\pgfkeysvalueof{/nodes/#2}}}}{\tikzset{/nodes/#2/.style={}}}
-    \node[vertex,
-          label=#3:$\pgfkeysvalueof{/labels/#2}$,
-          /nodes/#2] (#2) at (#4)
-    {\ifthenelse{\IfBooleanTF{#1}{\equal{}{}}{\pgfkeysifdefined{/mreza}{\equal{0}{1}}{\boolean{@oznake}}}}{$\izpisiOznako{#2}$\ifthenelse{\equal{#5}{}}{}{:\,}}{}\pgfkeysifdefined{/mreza}{}{$#5$}};
+\NewDocumentCommand{\vozlisce}{sO{vertex}mO{below}mO{}}{
+    \pgfkeysifdefined{/nodes/#3}{\tikzset{/nodes/#3/.style={\pgfkeysvalueof{/nodes/#3}}}}{\tikzset{/nodes/#3/.style={}}}
+    \ifthenelse{\boolean{@drevo}}{\ifthenelse{\equal{#2}{vertex}}{}{\pgfkeysifdefined{/labels/#3}{}{\pgfkeyssetvalue{/labels/#3}{#6}}}}{}
+    \node[#2,
+          label=#4:$\pgfkeysvalueof{/labels/#3}$,
+          /nodes/#3] (#3) at (#5)
+    {\ifthenelse{\IfBooleanTF{#1}{\equal{}{}}{\pgfkeysifdefined{/mreza}{\equal{0}{1}}{\boolean{@oznake}}}}{\ifthenelse{\boolean{@drevo} \and \equal{#2}{vertex}}{}{$\izpisiOznako{#3}$\ifthenelse{\boolean{@drevo}}{}{\ifthenelse{\equal{#6}{}}{}{:\,}}}}{}\pgfkeysifdefined{/mreza}{}{\ifthenelse{\boolean{@drevo} \and \not\equal{#2}{vertex}}{}{$#6$}}};
 }
 
-\NewDocumentCommand{\povezava}{mmO{}mO{}mO{}}{
-    \pgfkeysifdefined{/links/#1/#2}{}{\tikzset{/links/#1/#2/.style={}}}
-    \pgfkeysifdefined{/start/#1/#2}{}{\pgfkeyssetvalue{/start/#1/#2}{#4}}
-    \draw[puscica,povezava,/links/#1/#2] (#1) to[#7]
-        node[zacetek, #6, #5] {\pgfkeysifdefined{/mreza}{}{$\pgfkeysvalueof{/start/#1/#2}$}}
-        node[konec, #6, #5] {\pgfkeysifdefined{/mreza}{}{$\pgfkeysifdefined{/end/#1/#2}{\pgfkeysvalueof{/end/#1/#2}}{\pgfkeysifdefined{/nicle}{0}{}} \ifthenelse{\equal{#3}{}}{}{\le #3}$}}
-        (#2);
+\NewDocumentCommand{\povezava}{smmO{}mO{}mO{}}{
+    \pgfkeysifdefined{/links/#2/#3}{}{\tikzset{/links/#2/#3/.style={\IfBooleanTF{#1}{zvezdica}{}}}}
+    \pgfkeysifdefined{/start/#2/#3}{}{\pgfkeyssetvalue{/start/#2/#3}{#5}}
+    \draw[puscica,povezava,/links/#2/#3] (#2) to[#8]
+        node[zacetek, #7, #6] {\pgfkeysifdefined{/mreza}{}{$\pgfkeysvalueof{/start/#2/#3}$}}
+        node[konec, #7, #6] {\pgfkeysifdefined{/mreza}{}{$\pgfkeysifdefined{/end/#2/#3}{\pgfkeysvalueof{/end/#2/#3}}{\pgfkeysifdefined{/nicle}{0}{}} \ifthenelse{\equal{#4}{}}{}{\le #4}$}}
+        (#3);
 }
 
 \NewDocumentCommand{\nicle}{}{\pgfkeyssetvalue{/nicle}{}}
@@ -207,6 +289,9 @@
     \tikzstyle{velikost vozlisca razvoza}=[mreza/velikost vozlisca razvoza]%
     \tikzstyle{velikost vozlisca pretoka}=[mreza/velikost vozlisca pretoka]%
     \tikzstyle{velikost vozlisca neusmerjenega grafa}=[mreza/velikost vozlisca neusmerjenega grafa]%
+    \tikzstyle{velikost vozlisca usmerjenega grafa}=[mreza/velikost vozlisca usmerjenega grafa]%
+    \tikzstyle{velikost vozlisca drevesa}=[mreza/velikost vozlisca drevesa]%
+
     \tikzstyle{osnova}=[mreza/osnova]%
     \tikzstyle{zacetek razvoza}=[osnova, near start]%
     \savebox{\box@mreza}{

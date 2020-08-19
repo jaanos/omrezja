@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
+\usepackage{amsmath}
 \usepackage[oznake]{omrezja}
 
 \pgfrealjobname{vzorec}
@@ -256,5 +257,97 @@ Dodajmo uteži na vozlišča in povezave.
         \end{neusmerjen*}
     \end{mreza}
 }
+
+\clearpage
+
+\section{Usmerjeni grafi}
+
+Narišimo usmerjen graf.
+
+\NewEnviron{usmerjen@grafD}{
+    \vozlisce{s}{-7, 0}
+    \vozlisce{a}{-3, 0}
+    \vozlisce{b}{-5, 2}
+    \vozlisce{c}{-5, 0}
+    \vozlisce{d}{ 1,-2}
+    \vozlisce{e}{-1, 0}
+    \vozlisce{f}{ 1, 0}
+    \vozlisce{g}{ 3, 0}
+    \vozlisce{h}{ 3, 2}
+    \vozlisce{i}{ 5, 0}
+    \vozlisce{j}{-5,-2}
+    \vozlisce{t}{ 7, 0}
+
+    \povezava{s}{b}{0}{above}[sloped]
+    \povezava*{s}{c}{0}{above}
+    \povezava{s}{j}{0}{below}[sloped]
+    \povezava*{a}{e}{5}{above}
+    \povezava{b}{h}{3}{above}
+    \povezava*{c}{a}{5}{below}
+    \povezava{d}{t}{2}{below}[sloped]
+    \povezava{e}{d}{5}{below, near end}[sloped]
+    \povezava*{e}{f}{5}{below}
+    \povezava{f}{g}{2}{above}
+    \povezava*{f}{h}{2}{above}[sloped]
+    \povezava{g}{i}{1}{below}
+    \povezava*{h}{i}{3}{above}[sloped]
+    \povezava*{i}{t}{8}{above}
+    \povezava{j}{g}{1}{below, near start}[sloped]
+}
+
+\begin{usmerjen}[scale=1.5]{grafD}
+\end{usmerjen}
+
+\makebox[\textwidth][c]{
+    \begin{mreza}{4}{3}
+        \begin{usmerjen*}{grafD}
+        \end{usmerjen*}
+    \end{mreza}
+}
+
+\clearpage
+
+\section{Odločitvena drevesa}
+
+Narišimo odločitveno drevo.
+
+\begin{drevo}[scale=1.5]*
+    \setboolean{@oznake}{false}
+
+    \vozlisce[odlocitev]{A}[right]{-8,-1}[27]
+    \vozlisce[dogodek]{B}[above]{-4, 2}[26]
+    \vozlisce[odlocitev]{C}[below]{-4,-4}[27]
+    \vozlisce[odlocitev]{D}[above]{ 0, 4}[35]
+    \vozlisce[odlocitev]{E}[below]{ 0, 0}[17]
+    \vozlisce[dogodek]{F}[above]{ 0,-3}[27]
+    \vozlisce{G}{ 1,-5}[15]
+    \vozlisce[dogodek]{H}[above]{ 4, 5}[35]
+    \vozlisce{I}{ 5, 3}[14]
+    \vozlisce[dogodek]{J}[above]{ 4, 1}[17]
+    \vozlisce{K}{ 5,-1}[14]
+    \vozlisce{L}{ 4,-2}[54]
+    \vozlisce{M}{ 4,-4}[0 ]
+    \vozlisce{N}{ 8, 6}[53]
+    \vozlisce{O}{ 8, 4}[-1]
+    \vozlisce{P}{ 8, 2}[53]
+    \vozlisce{Q}{ 8, 0}[-1]
+
+    \povezava{A}{B}{\text{naročimo raziskavo}}[sloped]{above}
+    \povezava*{A}{C}{\text{ne naročimo raziskave}}[sloped]{below}
+    \povezava{B}{D}{\text{pozitivna: $1/2$}}[sloped]{above}
+    \povezava{B}{E}{\text{negativna: $1/2$}}[sloped]{below}
+    \povezava*{C}{F}{\text{sami prodajamo}}[sloped]{above}
+    \povezava{C}{G}{\text{prodamo konkurenci}}[sloped]{below}
+    \povezava*{D}{H}{\text{sami prodajamo}}[sloped]{above}
+    \povezava{D}{I}{\text{prodamo konkurenci}}[sloped]{below}
+    \povezava*{E}{J}{\text{sami prodajamo}}[sloped]{above}
+    \povezava{E}{K}{\text{prodamo konkurenci}}[sloped]{below}
+    \povezava{F}{L}{\text{uspeh: $1/2$}}[sloped]{above}
+    \povezava{F}{M}{\text{neuspeh: $1/2$}}[sloped]{below}
+    \povezava{H}{N}{\text{uspeh: $2/3$}}[sloped]{above}
+    \povezava{H}{O}{\text{neuspeh: $1/3$}}[sloped]{below}
+    \povezava{J}{P}{\text{uspeh: $1/3$}}[sloped]{above}
+    \povezava{J}{Q}{\text{neuspeh: $2/3$}}[sloped]{below}
+\end{drevo}
 
 \end{document}
