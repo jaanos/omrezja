@@ -66,8 +66,10 @@
         \tikzstyle{zvezdica}=[zasicena]
         \tikzstyle{puscica}=[->]
 }{
-        \begin{razvoz@#2}
-        \end{razvoz@#2}
+        \ifthenelse{\equal{#2}{*}}{}{
+            \begin{razvoz@#2}
+            \end{razvoz@#2}
+        }
     \end{tikzpicture}
 }
 
@@ -97,8 +99,10 @@
         \tikzstyle{puscica}=[->]
 }{
         \pgfkeysifdefined{/nicle}{\tikzstyle{povezava}=[prazna]}{}
-        \begin{pretok@#2}
-        \end{pretok@#2}
+        \ifthenelse{\equal{#2}{*}}{}{
+            \begin{pretok@#2}
+            \end{pretok@#2}
+        }
     \end{tikzpicture}
 }
 
@@ -127,8 +131,10 @@
     \tikzstyle{zvezdica}=[pot]
     \tikzstyle{puscica}=[]
 }{
-    \begin{neusmerjen@#2}
-    \end{neusmerjen@#2}
+    \ifthenelse{\equal{#2}{*}}{}{
+        \begin{neusmerjen@#2}
+        \end{neusmerjen@#2}
+    }
     \end{tikzpicture}
 }
 
