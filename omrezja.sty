@@ -199,6 +199,7 @@
 
 \NewDocumentEnvironment{drevo*}{O{{}}m}{
     \setboolean{@drevo}{true}
+    \RenewDocumentCommand{\zacetekPovezave}{m}{\text{##1}}
     \begin{tikzpicture}[velikost,#1]
     \tikzstyle{every node}=[]
     \tikzstyle{vertex}=[vozlisce drevesa]
@@ -236,21 +237,31 @@
     \ifthenelse{\equal{#1}{l}}{\ell}{#1}
 }
 
+\NewDocumentCommand{\imeVozlisca}{m}{
+    \izpisiOznako{#1}
+}
+
+\NewDocumentCommand{\oznakaVozlisca}{m}{#1}
+
+\NewDocumentCommand{\zacetekPovezave}{m}{#1}
+
+\NewDocumentCommand{\konecPovezave}{m}{#1}
+
 \NewDocumentCommand{\vozlisce}{sO{vertex}mO{below}mO{}}{
     \pgfkeysifdefined{/nodes/#3}{\tikzset{/nodes/#3/.style={\pgfkeysvalueof{/nodes/#3}}}}{\tikzset{/nodes/#3/.style={}}}
     \ifthenelse{\boolean{@drevo}}{\ifthenelse{\equal{#2}{vertex}}{}{\pgfkeysifdefined{/labels/#3}{}{\pgfkeyssetvalue{/labels/#3}{#6}}}}{}
     \node[#2,
-          label=#4:$\pgfkeysvalueof{/labels/#3}$,
+          label=#4:\ensuremath{\oznakaVozlisca{\pgfkeysvalueof{/labels/#3}}},
           /nodes/#3] (#3) at (#5)
-    {\ifthenelse{\IfBooleanTF{#1}{\equal{}{}}{\pgfkeysifdefined{/mreza}{\equal{0}{1}}{\boolean{@oznake}}}}{\ifthenelse{\boolean{@drevo} \and \equal{#2}{vertex}}{}{$\izpisiOznako{#3}$\ifthenelse{\boolean{@drevo}}{}{\ifthenelse{\equal{#6}{}}{}{:\,}}}}{}\pgfkeysifdefined{/mreza}{}{\ifthenelse{\boolean{@drevo} \and \not\equal{#2}{vertex}}{}{$#6$}}};
+    {\ifthenelse{\IfBooleanTF{#1}{\equal{}{}}{\pgfkeysifdefined{/mreza}{\equal{0}{1}}{\boolean{@oznake}}}}{\ifthenelse{\boolean{@drevo} \and \equal{#2}{vertex}}{}{\ensuremath{\imeVozlisca{#3}}\ifthenelse{\boolean{@drevo}}{}{\ifthenelse{\equal{#6}{}}{}{:\,}}}}{}\pgfkeysifdefined{/mreza}{}{\ifthenelse{\boolean{@drevo} \and \not\equal{#2}{vertex}}{}{\ensuremath{\oznakaVozlisca{#6}}}}};
 }
 
 \NewDocumentCommand{\povezava}{smmO{}mO{}mO{}}{
     \pgfkeysifdefined{/links/#2/#3}{}{\tikzset{/links/#2/#3/.style={\IfBooleanTF{#1}{zvezdica}{}}}}
     \pgfkeysifdefined{/start/#2/#3}{}{\pgfkeyssetvalue{/start/#2/#3}{#5}}
     \draw[puscica,povezava,/links/#2/#3] (#2) to[#8]
-        node[zacetek, #7, #6] {\pgfkeysifdefined{/mreza}{}{$\pgfkeysvalueof{/start/#2/#3}$}}
-        node[konec, #7, #6] {\pgfkeysifdefined{/mreza}{}{$\pgfkeysifdefined{/end/#2/#3}{\pgfkeysvalueof{/end/#2/#3}}{\pgfkeysifdefined{/nicle}{0}{}} \ifthenelse{\equal{#4}{}}{}{\le #4}$}}
+        node[zacetek, #7, #6] {\pgfkeysifdefined{/mreza}{}{\ensuremath{\zacetekPovezave{\pgfkeysvalueof{/start/#2/#3}}}}}
+        node[konec, #7, #6] {\pgfkeysifdefined{/mreza}{}{\ensuremath{\konecPovezave{\pgfkeysifdefined{/end/#2/#3}{\pgfkeysvalueof{/end/#2/#3}}{\pgfkeysifdefined{/nicle}{0}{}} \ifthenelse{\equal{#4}{}}{}{\le #4}}}}}
         (#3);
 }
 
